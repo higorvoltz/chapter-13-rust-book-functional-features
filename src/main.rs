@@ -1,3 +1,6 @@
+use std::time::Duration;
+use std::thread;
+
 #[derive(Debug, PartialEq, Copy, Clone)]
 enum ShirtColor {
   Red,
@@ -31,6 +34,12 @@ impl Inventory {
   }
 }
 
+#[derive(Debug)]
+struct Rectangle {
+  width: u32,
+  height: u32,
+}
+
 fn main() {
   let store = Inventory {
     shirts: vec![ShirtColor::Blue, ShirtColor::Red, ShirtColor::Blue],
@@ -49,4 +58,51 @@ fn main() {
     "the user with preference {:?} gets {:?}",
     user_pref2, giveaway2
   );
+
+  let _expensive_closure = |num: u32| -> u32 {
+    println!("calculating slowly...");
+    thread::sleep(Duration::from_secs(2));
+    num
+  };
+
+  // let example_closure = |x| x;
+  // let s = example_closure(String::from("hello world"));
+  // let n = example_closure(5);
+
+  let list = vec![1, 2, 3, 4, 5];
+  println!("before defining closure: {:?}", list);
+
+  let only_borrows = || println!("from closure: {:?}", list);
+
+  println!("before calling closure: {:?}", list);
+  only_borrows();
+  println!("after calling closure: {:?}", list);
+
+  println!();
+
+  let other_list = vec![1, 2, 3, 4, 5];
+  println!("before defining closure: {:?}", other_list);
+
+  thread::spawn(move || println!("from thread: {:?}", other_list))
+  .join()
+  .unwrap();
+
+  let mut another_list = [
+    Rectangle { width: 10, height: 1 },
+    Rectangle { width: 3, height: 8 },
+    Rectangle { width: 6, height: 4 },
+  ];
+
+  another_list.sort_by_key(|r| r.width);
+  println!("{:#?}", another_list);
+
+  let mut num_sort_operations = 0;
+
+  another_list.sort_by_key (|r| {
+    num_sort_operations += 1;
+    r.height
+  });
+
+  println!("{:#?}, sorted in {num_sort_operations} operations", another_list);
+
 }
