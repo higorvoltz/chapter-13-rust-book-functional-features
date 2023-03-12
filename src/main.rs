@@ -105,4 +105,18 @@ fn main() {
 
   println!("{:#?}, sorted in {num_sort_operations} operations", another_list);
 
+  // Processing a Series of Items with Iterators
+  let v1 = vec![1, 2, 3, 4];
+  let v1_iter = v1.iter();
+
+  for val in v1_iter {
+    println!("got: {}", val);
+  }
+
+  println!();
+
+  let v2 = vec![1, 2, 3, 4];
+  let v3: Vec<_> = v2.iter().map(|z| z + 1).collect();
+  assert_eq!(v3, vec![2, 3, 4, 5]);
+
 }
